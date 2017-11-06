@@ -5,7 +5,7 @@
 * - moveUp: boolean
 */
 $(document).ready(function() {
-    $("#list").matchAndMove({cities: ["Moscow", "Washington, DC.", "Saint Petersburg"], moveUp: false}).css("color", "blue");
+    $("#list").matchAndMove({cities: ["Moscow", "Washington, DC", "Saint Petersburg", "Prague"], moveUp: false}).css("color", "blue");
 });
 
 (function($) {
@@ -46,15 +46,6 @@ $(document).ready(function() {
                         listItem.innerText += appendText;
                     });
                     animate(listItem);
-/*                     $(listItem).click(function() {
-                        $(this).fadeOut(function() {
-                            if (ops.moveUp) {
-                                $(this).css("display", "list-item").prependTo(self);
-                            } else {
-                                $(this).css("display", "list-item").appendTo(self);
-                            }
-                        });
-                    }); */
                 }
             }
         }

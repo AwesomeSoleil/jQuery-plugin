@@ -4,6 +4,9 @@
 * - cities: [],
 * - moveUp: boolean
 */
+$(document).ready(function() {
+    $("#list").matchAndMove({cities: ["Moscow", "Washington, DC", "Saint Petersburg", "Prague"], moveUp: false}).css("color", "blue");
+});
 
 (function($) {
     "use strict";
@@ -21,6 +24,17 @@
         const metricSystem = "units=metric";
         const message = " , but who cares?";
         let listItems = self.children();
+        function animate(li) {
+            $(li).click(function() {
+                $(this).fadeOut(function() {
+                    if (ops.moveUp) {
+                        $(this).css("display", "list-item").prependTo(self);
+                    } else {
+                        $(this).css("display", "list-item").appendTo(self);
+                    }
+                });
+            });
+        }
         for (let i = 0; i < cities.length; i ++) {
             for (let j = 0; j < listItems.length; j ++) {
                 let listItem = listItems[j];
@@ -31,15 +45,7 @@
                         let appendText = " " + data["main"]["temp"].toFixed(0) + " degrees in " + data["name"] + message;
                         listItem.innerText += appendText;
                     });
-                    $(listItem).click(function() {
-                        $(this).fadeOut(function() {
-                            if (ops.moveUp) {
-                                $(this).css("display", "list-item").prependTo(self);
-                            } else {
-                                $(this).css("display", "list-item").appendTo(self);
-                            }
-                        });
-                    });
+                    animate(listItem);
                 }
             }
         }

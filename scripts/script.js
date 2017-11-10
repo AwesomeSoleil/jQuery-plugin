@@ -3,9 +3,19 @@
 * Options:
 * - cities: [],
 * - moveUp: boolean
+*
+*please refer http://openweathermap.org/help/city_list.txt for city ids
 */
+
 $(document).ready(function() {
-    $("#list").matchAndMove({cities: ["Moscow", "Washington, DC", "Saint Petersburg", "Prague"], moveUp: false}).css("color", "blue"); //chainable !
+    $("#list").matchAndMove({
+        cities: {"Saint Petersburg": 498817, //list of predefined cities's got overwritten with custom list
+                "Moscow": 5601538,
+                "Prague": 3067696,
+                "Norilsk": 1497337,
+                },
+        moveUp: false //default slide direction's got owerwritten
+}).css("color", "blue"); //chainable
 });
 
 (function($) {
@@ -14,19 +24,31 @@ $(document).ready(function() {
     $.fn.matchAndMove = function(options) {
         const self = this;
         let ops = $.extend({
-            cities: ["Saint Petersburg", "Moscow", "Prague"],
-            moveUp: true
+                        cities: {
+                                "London": 2643743,
+                                "Tokyo": 1850147,
+                                "Frankfurt am Main": 3220968,
+                                },
+                        moveUp: true
         }, options);
-
-        let cities = ops.cities.map(function(cityName) {
-            return cityName.toLowerCase();
-        });
-
-        const APIKey = "bf03de8120fbabf27fdd083f9d1fddc0";
-        const baseAPICall = "http://api.openweathermap.org/data/2.5/weather?q=";
-        const metricSystem = "units=metric";
-        const message = " , but who cares?";
         let listItems = self.children();
+        let matchedCities = [];
+
+        function process(matched) {
+            const APIKey = "bf03de8120fbabf27fdd083f9d1fddc0";
+            const baseAPICall = "http://api.openweathermap.org/data/2.5/group?id=";
+            const metricSystem = "units=metric";       
+            const message = " , but who cares?";
+            let url = baseAPICall + matched.toString() + "&" + metricSystem + "&&APPID=" + APIKey;
+            $.getJSON(url, function(data) {
+                $.each(data.list, function(index) {
+                    let tailText = " " + data.list[index]["main"]["temp"].toFixed(0) + " degrees in " + data.list[index]["name"] + message;
+                    $("#" + data.list[index]["id"]).append(tailText);
+                });
+            }).fail(function() {
+                console.log("Failed to retrieve data from the OpenWeatherMap");
+              });
+        }
 
         function animate(li) {
             $(li).click(function() {
@@ -41,20 +63,17 @@ $(document).ready(function() {
             });
         }
 
-        for (let i = 0; i < cities.length; i ++) {
-            for (let j = 0; j < listItems.length; j ++) {
-                let listItem = listItems[j];
-                let match = listItem.innerText.toLowerCase().includes(cities[i]);
+        $.each(ops.cities, function(cityName, cityId) {
+            $.each(listItems, function() {
+                let match = this.innerText.toLowerCase().includes(cityName.toLowerCase());
                 if(match) {
-                    let url = baseAPICall + cities[i] + "&" + metricSystem + "&&APPID=" + APIKey;
-                    $.getJSON(url, function(data) {
-                        let appendText = " " + data["main"]["temp"].toFixed(0) + " degrees in " + data["name"] + message;
-                        listItem.innerText += appendText;
-                    });
-                    animate(listItem);
+                    matchedCities.push(cityId);
+                    this.setAttribute("id", cityId);
+                    animate(this);
                 }
-            }
-        }
+            });
+        });
+        process(matchedCities);
         return self;
     };
 }(jQuery));

@@ -15,7 +15,14 @@ $(document).ready(function() {
                 "Norilsk": 1497337,
                 },
         moveUp: false //default slide direction's got owerwritten
-}).css("color", "blue"); //chainable
+}).css("color", "blue").matchAndMove({
+    cities: {"Saint Petersburg": 498817, //list of predefined cities's got overwritten with custom list
+            "Moscow": 5601538,
+            "Prague": 3067696,
+            "Norilsk": 1497337,
+            },
+    moveUp: true //default slide direction's got owerwritten
+}); //chainable
 });
 
 (function($) {
@@ -50,8 +57,8 @@ $(document).ready(function() {
               });
         }
 
-        function animate(li) {
-            $(li).click(function() {
+        function clickHandler(li) {
+            $(li).on("click", function() {
                 $(this).fadeOut(function() {
                     $(this).css("display", "list-item");
                     if (ops.moveUp) {
@@ -69,10 +76,12 @@ $(document).ready(function() {
                 if(match) {
                     matchedCities.push(cityId);
                     this.setAttribute("id", cityId);
-                    animate(this);
+                    $(this).off("click");
+                    clickHandler(this);
                 }
             });
         });
+        
         process(matchedCities);
         return self;
     };

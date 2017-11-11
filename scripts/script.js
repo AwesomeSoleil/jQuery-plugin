@@ -15,14 +15,7 @@ $(document).ready(function() {
                 "Norilsk": 1497337,
                 },
         moveUp: false //default slide direction's got owerwritten
-}).css("color", "blue").matchAndMove({
-    cities: {"Saint Petersburg": 498817, //list of predefined cities's got overwritten with custom list
-            "Moscow": 5601538,
-            "Prague": 3067696,
-            "Norilsk": 1497337,
-            },
-    moveUp: true //default slide direction's got owerwritten
-}); //chainable
+}).css("color", "blue"); //chainable
 });
 
 (function($) {
@@ -81,7 +74,7 @@ $(document).ready(function() {
                 }
             });
         });
-        
+
         process(matchedCities);
         return self;
     };

@@ -77,7 +77,9 @@ $(document).ready(function() {
                 }
             });
         });
-        process(matchedCities);
+        if (matchedCities.length > 0) {
+            process(matchedCities);
+        }
         return this;
     };
 }(jQuery));

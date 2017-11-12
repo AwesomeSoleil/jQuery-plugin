@@ -9,26 +9,29 @@
 
 $(document).ready(function() {
     $("#list").matchAndMove({
-        cities: {"Saint Petersburg": 498817, //list of predefined cities's got overwritten with custom list
-                "Moscow": 5601538,
-                "Prague": 3067696,
-                "Norilsk": 1497337,
-                },
-        moveUp: false //default slide direction's got owerwritten
-}).css("color", "blue"); //chainable
+        cities: {},
+        moveUp: true
+        }).matchAndMove({
+        cities: {
+            "Saint Petersburg": 498817,
+            "Moscow": 5601538,
+            "Prague": 3067696,
+            "Norilsk": 1497337,
+            },
+        moveUp: false
+    }).css("color", "#2F4F4F");
 });
 
 (function($) {
     "use strict";
-
     $.fn.matchAndMove = function(options) {
         const self = this;
         let ops = $.extend({
                         cities: {
-                                "London": 2643743,
-                                "Tokyo": 1850147,
-                                "Frankfurt am Main": 3220968,
-                                },
+                            "London": 2643743,
+                            "Tokyo": 1850147,
+                            "Frankfurt am Main": 3220968,
+                            },
                         moveUp: true
         }, options);
         let listItems = self.children();
@@ -47,7 +50,7 @@ $(document).ready(function() {
                 });
             }).fail(function() {
                 console.log("Failed to retrieve data from the OpenWeatherMap");
-              });
+            });
         }
 
         function clickHandler(li) {
@@ -55,9 +58,9 @@ $(document).ready(function() {
                 $(this).fadeOut(function() {
                     $(this).css("display", "list-item");
                     if (ops.moveUp) {
-                        $(this).prependTo(self);
+                        $(this).prependTo($(this)[0]["parentElement"]);
                     } else {
-                        $(this).appendTo(self);
+                        $(this).appendTo($(this)[0]["parentElement"]);
                     }
                 });
             });
@@ -74,8 +77,7 @@ $(document).ready(function() {
                 }
             });
         });
-
         process(matchedCities);
-        return self;
+        return this;
     };
 }(jQuery));
